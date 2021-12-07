@@ -55,9 +55,11 @@ namespace Networking
         private void Listen()
         {
             while (_listenRun)
+            {
+                _queue.WaitForPacket();
                 // If the queue is not empty, get a packet from the front of the queue
                 // and remove that packet from the queue
-                if (!_queue.IsEmpty())
+                while (!_queue.IsEmpty())
                 {
                     // Dequeue the front packet of the queue
                     var packet = _queue.Dequeue();
