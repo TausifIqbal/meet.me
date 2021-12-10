@@ -39,10 +39,12 @@ namespace Networking
         {
             try
             {
+                Trace.WriteLine("[Networking] Parsing IPv4 address");
                 return IPAddress.Parse(serverIp);
             }
-            catch (Exception e)
+            catch (Exception)
             {
+                Trace.WriteLine("[Networking] Parsing DNS name");
                 return Dns.GetHostAddresses(serverIp).Last();
             }
         }
@@ -99,14 +101,15 @@ namespace Networking
             if (Environment.GetEnvironmentVariable("TEST_MODE") == "E2E") return;
             if (!_clientSocket.Connected) return;
             
-            _receiveQueue.Close();
-            _sendQueue.Close();
             
             // stop the listener of the client 
             _sendSocketListenerClient.Stop();
             _receiveSocketListener.Stop();
             _receiveQueueListener.Stop();
 
+            _receiveQueue.Close();
+            _sendQueue.Close();
+            
             //close stream  and connection of the client
             _clientSocket.GetStream().Close();
             _clientSocket.Close();
